@@ -1,0 +1,12 @@
+{
+  "provider": "AWS", 
+  "aws": {
+    "access_key_id": "aws-access-key-id",
+    "secret_access_key": "aws-secret-access-key",
+    "bucket_name": "aws-bucket-name"
+  },
+  "azure": {
+    "connection_string": "azure-connection-string",
+    "container_name": "azure-container-name"
+  }
+}
