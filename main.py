@@ -7,7 +7,7 @@ def display_menu():
     print("1. Upload a file")
     print("2. Download a file")
     print("x  Exit")
-    choice = input("Enter your choice (1/2/3): ")
+    choice = input("Enter your choice (1/2/x): ")
     return choice
 
 def handle_choice(provider):
