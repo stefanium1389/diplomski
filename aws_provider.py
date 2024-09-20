@@ -1,3 +1,4 @@
+import os
 import boto3
 from botocore.exceptions import NoCredentialsError
 from cloud_provider import CloudProvider
@@ -24,6 +25,8 @@ class AWSProvider(CloudProvider):
         try:
             if destination == '':
                 destination = source
+            if os.path.isdir(destination):
+                destination = os.path.join(destination, source.split('/')[-1])
             self.s3.download_file(self.bucket_name, source, destination)
             print("Download Successful")
         except FileNotFoundError:

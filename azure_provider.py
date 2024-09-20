@@ -1,3 +1,4 @@
+import os
 from azure.storage.blob import BlobServiceClient
 from cloud_provider import CloudProvider
 
@@ -22,6 +23,8 @@ class AzureProvider(CloudProvider):
         try:
             if destination == '':
                 destination = source
+            if os.path.isdir(destination):
+                destination = os.path.join(destination, source.split('/')[-1])
             blob_client = self.blob_service_client.get_blob_client(container=self.container_name, blob=source)
             with open(destination, "wb") as download_file:
                 download_file.write(blob_client.download_blob().readall())
