@@ -1,14 +1,19 @@
 import os
 import boto3
+import requests
 from botocore.exceptions import NoCredentialsError
+from botocore.config import Config
 from cloud_provider import CloudProvider
 
 class AWSProvider(CloudProvider):
     def __init__(self, config):
+        s3_config = Config(signature_version='s3v4', region_name=config['aws']['region_name'])
         self.s3 = boto3.client('s3', 
                                aws_access_key_id=config['aws']['access_key_id'],
-                               aws_secret_access_key=config['aws']['secret_access_key'])
+                               aws_secret_access_key=config['aws']['secret_access_key'],
+                               config=s3_config)
         self.bucket_name = config['aws']['bucket_name']
+        self.expiration = config['aws']['signed_url_expires']
 
     def upload_file(self, file_path, destination):
         try:
@@ -21,14 +26,25 @@ class AWSProvider(CloudProvider):
         except NoCredentialsError:
             print("Credentials not available")
 
-    def download_file(self, source, destination):
+    def download_file(self, source, destination, is_signed_url):
         try:
             if destination == '':
                 destination = source
             if os.path.isdir(destination):
                 destination = os.path.join(destination, source.split('/')[-1])
-            self.s3.download_file(self.bucket_name, source, destination)
-            print("Download Successful")
+            if not is_signed_url:
+                self.s3.download_file(self.bucket_name, source, destination)
+                print("Download Successful")
+            else:
+                response = self.s3.generate_presigned_url('get_object',
+                                                    Params={'Bucket': self.bucket_name,
+                                                            'Key': source},
+                                                    ExpiresIn=self.expiration)
+                get_response = requests.get(response)
+                if get_response.status_code == 200:
+                    with open(source, 'wb') as file:
+                        file.write(get_response.content)
+                        print("Download Successful")
         except FileNotFoundError:
             print("The file was not found")
         except NoCredentialsError:

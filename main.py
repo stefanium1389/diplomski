@@ -15,7 +15,7 @@ def handle_choice(provider):
         choice = display_menu()
         if choice == '1':
             file_path = input("Enter the path to the file you want to upload: ")
-            destination = input("(Optional )Enter the destination path in the cloud: ")
+            destination = input("(Optional) Enter the destination path in the cloud: ")
             provider.upload_file(file_path, destination)
         elif choice == '2':
             print("Listing all files...")
@@ -32,15 +32,22 @@ def handle_choice(provider):
                 file_choice = int(file_choice)
                 if 1 <= file_choice <= len(files):
                     file_name = files[file_choice - 1]
-                    destination = input("(Optional) Enter the destination path to save the file: ")
-                    provider.download_file(file_name, destination)
+                    signed_url_choice = input("(Optional) Use presigned urls? (Y/N): ")
+                    is_signed_url = False
+                    if signed_url_choice.lower() == "y":
+                        is_signed_url = True
+                    destination = ''
+                    if not is_signed_url:
+                        destination = input("(Optional) Enter the destination path to save the file: ")
+                    
+                    provider.download_file(file_name, destination, is_signed_url)
                 else:
                     print("Invalid number, please try again.")
             except ValueError:
                 print("Please enter a valid number.")
         elif choice == 'x' or choice == 'X':
             print("Exiting the application.")
-            break
+            exit(0)
         else:
             print("Invalid choice, please try again.")
 
@@ -48,14 +55,32 @@ def handle_choice(provider):
 if __name__ == "__main__":
     with open('config.json') as config_file:
         config = json.load(config_file)
+        config_keys = list(config.keys())
+        for i, key in enumerate(config_keys, 1):
+                print(f"{i}. {key}") 
+        print("x  Exit")
+        while True:  
+            provider_choice = input("Enter the number of the provider you want to use: ")
+            if provider_choice.lower() == "x":
+                print("Exiting the application.")
+                exit(0)
+            try:
+                provider_choice = int(provider_choice)
+                if 1 <= provider_choice <= len(config_keys):
+                    provider_name = config_keys[provider_choice - 1]
+                    if config[provider_name]["provider"] == "AWS":
+                        provider = AWSProvider(config)
+                    elif config[provider_name]["provider"] == "Azure":
+                        provider = AzureProvider(config)
+                    else:
+                        print("Invalid provider configuration!")
+                        exit(1)
+                    handle_choice(provider)
+                else:
+                    print("Invalid choice, please try again.")
 
-    if config['provider'] == "AWS":
-        provider = AWSProvider(config)
-    elif config['provider'] == "Azure":
-       provider = AzureProvider(config)
-    else:
-        print("Invalid provider specified in config.")
-        exit(1)
+            except ValueError:
+                print("Please enter a valid number.")
 
-    handle_choice(provider)
+    # handle_choice(provider)
 

@@ -7,7 +7,7 @@ class CloudProvider(ABC):
         pass
 
     @abstractmethod
-    def download_file(self, source, destination):
+    def download_file(self, source, destination, is_signed_url):
         pass
     
     @abstractmethod
