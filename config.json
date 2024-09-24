@@ -1,12 +1,16 @@
-{
-  "provider": "AWS", 
+{ 
   "aws": {
+    "provider": "AWS",
     "access_key_id": "aws-access-key-id",
-    "secret_access_key": "aws-secret-access-key",
-    "bucket_name": "aws-bucket-name"
+    "secret_access_key": "aws-access-key",
+    "bucket_name": "aws-s3-bucket-name",
+    "region_name": "aws-region",
+    "signed_url_expires": 3600
   },
   "azure": {
+    "provider": "Azure",
     "connection_string": "azure-connection-string",
-    "container_name": "azure-container-name"
+    "container_name": "azure-container-name",
+    "signed_url_expires": 3600
   }
 }

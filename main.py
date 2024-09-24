@@ -69,9 +69,9 @@ if __name__ == "__main__":
                 if 1 <= provider_choice <= len(config_keys):
                     provider_name = config_keys[provider_choice - 1]
                     if config[provider_name]["provider"] == "AWS":
-                        provider = AWSProvider(config)
+                        provider = AWSProvider(config[provider_name])
                     elif config[provider_name]["provider"] == "Azure":
-                        provider = AzureProvider(config)
+                        provider = AzureProvider(config[provider_name])
                     else:
                         print("Invalid provider configuration!")
                         exit(1)

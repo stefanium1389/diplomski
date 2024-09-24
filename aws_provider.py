@@ -7,13 +7,13 @@ from cloud_provider import CloudProvider
 
 class AWSProvider(CloudProvider):
     def __init__(self, config):
-        s3_config = Config(signature_version='s3v4', region_name=config['aws']['region_name'])
+        s3_config = Config(signature_version='s3v4', region_name=config['region_name'])
         self.s3 = boto3.client('s3', 
-                               aws_access_key_id=config['aws']['access_key_id'],
-                               aws_secret_access_key=config['aws']['secret_access_key'],
+                               aws_access_key_id=config['access_key_id'],
+                               aws_secret_access_key=config['secret_access_key'],
                                config=s3_config)
-        self.bucket_name = config['aws']['bucket_name']
-        self.expiration = config['aws']['signed_url_expires']
+        self.bucket_name = config['bucket_name']
+        self.expiration = config['signed_url_expires']
 
     def upload_file(self, file_path, destination):
         try:

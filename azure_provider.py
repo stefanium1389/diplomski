@@ -7,9 +7,10 @@ from cloud_provider import CloudProvider
 class AzureProvider(CloudProvider):
     
     def __init__(self, config):
-        self.connection_string = config['azure']['connection_string']
+        self.connection_string = config['connection_string']
         self.blob_service_client = BlobServiceClient.from_connection_string(self.connection_string)
-        self.container_name = config['azure']['container_name']
+        self.container_name = config['container_name']
+        self.expiration = config['signed_url_expires']
 
         
     def upload_file(self, file_path, destination):
@@ -44,7 +45,7 @@ class AzureProvider(CloudProvider):
                     blob_name=source,
                     account_key=account_key,
                     permission=BlobSasPermissions(read=True),
-                    expiry=datetime.now() + timedelta(hours=1) 
+                    expiry=datetime.now() + timedelta(seconds=self.expiration) 
                 )
                 sas_url = f"https://{account_name}.blob.core.windows.net/{self.container_name}/{source}?{sas_token}"
                 get_response = requests.get(sas_url)
