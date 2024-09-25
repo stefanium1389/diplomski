@@ -50,7 +50,7 @@ class AzureProvider(CloudProvider):
                 sas_url = f"https://{account_name}.blob.core.windows.net/{self.container_name}/{source}?{sas_token}"
                 get_response = requests.get(sas_url)
                 if get_response.status_code == 200:
-                    with open(source, 'wb') as file:
+                    with open(destination, 'wb') as file:
                         file.write(get_response.content)
                         print("Download Successful")
         except Exception as e:

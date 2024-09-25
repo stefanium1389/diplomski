@@ -3,7 +3,7 @@ from aws_provider import AWSProvider
 from azure_provider import AzureProvider
 
 def display_menu():
-    print("\nPlease choose an option:")
+    print("Please choose an option:")
     print("1. Upload a file")
     print("2. Download a file")
     print("x  Exit")
@@ -37,8 +37,7 @@ def handle_choice(provider):
                     if signed_url_choice.lower() == "y":
                         is_signed_url = True
                     destination = ''
-                    if not is_signed_url:
-                        destination = input("(Optional) Enter the destination path to save the file: ")
+                    destination = input("(Optional) Enter the destination path to save the file: ")
                     
                     provider.download_file(file_name, destination, is_signed_url)
                 else:
@@ -56,6 +55,7 @@ if __name__ == "__main__":
     with open('config.json') as config_file:
         config = json.load(config_file)
         config_keys = list(config.keys())
+        print("Please choose an option:")
         for i, key in enumerate(config_keys, 1):
                 print(f"{i}. {key}") 
         print("x  Exit")

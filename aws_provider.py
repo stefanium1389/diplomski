@@ -42,7 +42,7 @@ class AWSProvider(CloudProvider):
                                                     ExpiresIn=self.expiration)
                 get_response = requests.get(response)
                 if get_response.status_code == 200:
-                    with open(source, 'wb') as file:
+                    with open(destination, 'wb') as file:
                         file.write(get_response.content)
                         print("Download Successful")
         except FileNotFoundError:
